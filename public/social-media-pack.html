@@ -223,7 +223,7 @@ The AI will extract key insights and create short, engaging posts optimized for 
 </div>
 
 <script>
-const SYSTEM_PROMPT = `You are an expert social media strategist who creates viral, engaging posts. You understand what makes content perform on each platform. You MUST output ONLY valid JSON with no additional text, markdown, or explanation.`;
+const SYSTEM_PROMPT = `You are an expert social media strategist who creates viral, engaging posts. You understand what makes content perform on each platform. Output ONLY valid JSON with no additional text.`;
 
 const USER_PROMPT_TEMPLATE = `Transform this content into high-performing social media posts:
 
@@ -258,7 +258,7 @@ INSTAGRAM (3 captions):
 
 HASHTAGS: Generate 12 relevant hashtags mixing popular and niche tags.
 
-IMPORTANT: Return ONLY this exact JSON structure with no other text before or after:
+Return ONLY this JSON (no markdown, no backticks, no explanation):
 {"linkedin":[{"content":"post1"},{"content":"post2"},{"content":"post3"}],"twitter":[{"content":"tweet1"},{"content":"tweet2"},{"content":"tweet3"},{"content":"tweet4"},{"content":"tweet5"}],"instagram":[{"content":"caption1"},{"content":"caption2"},{"content":"caption3"}],"hashtags":["#tag1","#tag2","#tag3","#tag4","#tag5","#tag6","#tag7","#tag8","#tag9","#tag10","#tag11","#tag12"]}`;
 
 let selectedOptions = { niche: 'General', tone: 'Professional' };
@@ -356,18 +356,20 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
     try {
         // Truncate content if too long
-        const truncatedContent = topic.length > 4000 ? topic.substring(0, 4000) + '...' : topic;
+        const truncatedContent = topic.length > 3000 ? topic.substring(0, 3000) + '...' : topic;
         
         const userPrompt = USER_PROMPT_TEMPLATE
             .replace('{content}', truncatedContent)
             .replace('{niche}', selectedOptions.niche)
             .replace('{tone}', selectedOptions.tone);
 
-        // Call API proxy
+        // Call YOUR API proxy instead of Anthropic directly
         const response = await fetch('/api/claude', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 3000,
                 system: SYSTEM_PROMPT,
                 messages: [{ role: 'user', content: userPrompt }]
             })
@@ -376,7 +378,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         const data = await response.json();
         
         if (data.error) {
-            throw new Error(data.error.message || data.error || 'API request failed');
+            throw new Error(data.error.message || 'API request failed');
         }
 
         let textContent = data.content
