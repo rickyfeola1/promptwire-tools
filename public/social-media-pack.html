@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Pack Generator - Create Complete Social Kits</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @font-face { font-family: 'Futura'; src: local('Futura Extra Bold'); font-weight: 800; font-style: italic; }
+        
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text-primary: #000000;
+            --text-secondary: #4a4a4a;
+            --text-muted: #717171;
+            --accent-primary: #1292eb;
+            --accent-hover: #0d7fd4;
+            --accent-light: rgba(18,146,235,0.1);
+            --border-color: #e5e5e5;
+            --success-color: #10b981;
+            --success-light: rgba(16,185,129,0.1);
+            --error-bg: #fef2f2;
+            --error-border: #fecaca;
+            --error-text: #dc2626;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
+        
+        .header { text-align: center; margin-bottom: 40px; }
+        .header-icon { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; background: var(--accent-light); border-radius: var(--radius-lg); font-size: 36px; margin-bottom: 20px; }
+        .header h1 { font-family: 'Futura', 'Trebuchet MS', sans-serif; font-size: clamp(32px, 5vw, 48px); font-weight: 800; font-style: italic; margin-bottom: 12px; }
+        .header h1 span { color: var(--accent-primary); }
+        .header p { font-size: 17px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+        
+        .stats-bar { display: flex; justify-content: center; gap: 40px; margin-bottom: 40px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-lg); flex-wrap: wrap; }
+        .stat { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary); }
+        .stat-icon { width: 32px; height: 32px; background: var(--accent-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent-primary); }
+        .stat strong { color: var(--text-primary); }
+        
+        .input-section { background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; transition: border-color 0.3s; }
+        .input-section:focus-within { border-color: var(--accent-primary); }
+        .input-label { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; margin-bottom: 14px; }
+        .input-label-icon { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--accent-light); border-radius: 6px; font-size: 14px; }
+        textarea { width: 100%; min-height: 150px; padding: 16px; border: 2px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 15px; line-height: 1.7; color: var(--text-primary); background: var(--bg-primary); resize: vertical; transition: border-color 0.3s; }
+        textarea:focus { outline: none; border-color: var(--accent-primary); }
+        textarea::placeholder { color: var(--text-muted); }
+        
+        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+        .option-group { background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; }
+        .option-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+        .option-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+        .option-btn { padding: 10px 16px; background: var(--bg-secondary); border: 2px solid transparent; border-radius: 100px; font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.25s; }
+        .option-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .option-btn.active { background: var(--accent-primary); border-color: var(--accent-primary); color: white; }
+        
+        .generate-section { display: flex; justify-content: center; margin: 32px 0; }
+        .generate-btn { display: flex; align-items: center; gap: 10px; padding: 18px 48px; background: var(--accent-primary); border: none; border-radius: var(--radius-xl); font-size: 16px; font-weight: 600; color: white; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(18,146,235,0.3); }
+        .generate-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
+        .generate-btn.loading .spinner { display: block; }
+        .generate-btn.loading .btn-text { display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .loading-message { text-align: center; padding: 40px 20px; display: none; }
+        .loading-message.show { display: block; }
+        .loading-message h3 { font-size: 18px; margin-bottom: 8px; }
+        .loading-message p { color: var(--text-muted); font-size: 14px; }
+        .loading-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+        .loading-dots span { font-size: 24px; animation: pulse 1.5s ease-in-out infinite; }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        
+        .error-message { background: var(--error-bg); border: 2px solid var(--error-border); color: var(--error-text); padding: 16px 20px; border-radius: var(--radius-md); margin-bottom: 20px; display: none; }
+        .error-message.show { display: block; }
+        
+        .output-section { display: none; }
+        .output-section.show { display: block; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; } }
+        
+        .reset-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 auto 24px; padding: 12px 24px; background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all 0.25s; }
+        .reset-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        
+        .platform-tabs { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid var(--border-color); padding-bottom: 16px; flex-wrap: wrap; }
+        .platform-tab { display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 100px; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all 0.25s; }
+        .platform-tab:hover { border-color: var(--accent-primary); }
+        .platform-tab.active { background: var(--accent-primary); border-color: var(--accent-primary); color: white; }
+        .platform-tab .count { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 8px; background: rgba(255,255,255,0.2); border-radius: 100px; font-size: 12px; }
+        .platform-tab:not(.active) .count { background: var(--accent-light); color: var(--accent-primary); }
+        
+        .platform-content { display: none; }
+        .platform-content.active { display: block; }
+        
+        .post-card { background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 16px; overflow: hidden; transition: border-color 0.3s; }
+        .post-card:hover { border-color: var(--accent-primary); }
+        .post-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); }
+        .post-number { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+        .post-number span { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: var(--accent-primary); border-radius: 50%; color: white; font-size: 12px; }
+        .copy-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
+        .copy-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .copy-btn.copied { border-color: var(--success-color); color: var(--success-color); background: var(--success-light); }
+        .post-body { padding: 18px; }
+        .post-content { font-size: 14px; line-height: 1.7; color: var(--text-primary); white-space: pre-wrap; }
+        
+        .hashtags-section { background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; margin-top: 24px; }
+        .hashtags-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+        .hashtags-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .hashtag-pill { padding: 8px 14px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 100px; font-size: 13px; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+        .hashtag-pill:hover { background: var(--accent-light); border-color: var(--accent-primary); color: var(--accent-primary); }
+        .hashtag-pill.copied { background: var(--success-light); border-color: var(--success-color); color: var(--success-color); }
+        
+        @media (max-width: 768px) { 
+            .options-grid { grid-template-columns: 1fr; }
+            .platform-tabs { gap: 8px; }
+            .stats-bar { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="header-icon">📱</div>
+        <h1>Social Media <span>Pack</span></h1>
+        <p>Generate platform-optimized social posts instantly. Paste any content and get short, punchy posts tailored for LinkedIn, Twitter, and Instagram.</p>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stat"><div class="stat-icon">🤖</div><span><strong>AI</strong> powered</span></div>
+        <div class="stat"><div class="stat-icon">📱</div><span><strong>3</strong> platforms</span></div>
+        <div class="stat"><div class="stat-icon">✨</div><span><strong>Optimized</strong> for engagement</span></div>
+    </div>
+
+    <div id="formSection">
+        <div class="input-section">
+            <label class="input-label">
+                <div class="input-label-icon">💡</div>
+                Your Content or Topic
+            </label>
+            <textarea id="topicInput" placeholder="Paste your blog post, article, or describe your topic...
+
+The AI will extract key insights and create short, engaging posts optimized for each platform."></textarea>
+        </div>
+
+        <div class="options-grid">
+            <div class="option-group">
+                <label class="option-label">🎯 Industry/Niche</label>
+                <div class="option-buttons">
+                    <button class="option-btn active" data-option="niche" data-value="General">General</button>
+                    <button class="option-btn" data-option="niche" data-value="Tech/SaaS">Tech</button>
+                    <button class="option-btn" data-option="niche" data-value="Business/Finance">Business</button>
+                    <button class="option-btn" data-option="niche" data-value="Health/Wellness">Health</button>
+                    <button class="option-btn" data-option="niche" data-value="Creative/Design">Creative</button>
+                </div>
+            </div>
+            <div class="option-group">
+                <label class="option-label">🎨 Tone</label>
+                <div class="option-buttons">
+                    <button class="option-btn active" data-option="tone" data-value="Professional">Professional</button>
+                    <button class="option-btn" data-option="tone" data-value="Casual/Friendly">Casual</button>
+                    <button class="option-btn" data-option="tone" data-value="Inspiring/Motivational">Inspiring</button>
+                    <button class="option-btn" data-option="tone" data-value="Educational/Informative">Educational</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="error-message" id="errorMessage"></div>
+
+    <div class="generate-section">
+        <button class="generate-btn" id="generateBtn">
+            <span class="btn-text">📱 Generate Social Pack</span>
+            <div class="spinner"></div>
+        </button>
+    </div>
+
+    <div class="loading-message" id="loadingMessage">
+        <div class="loading-dots">
+            <span>💼</span>
+            <span>🐦</span>
+            <span>📸</span>
+        </div>
+        <h3>Creating your social media pack...</h3>
+        <p>AI is crafting platform-optimized posts. This takes 10-20 seconds.</p>
+    </div>
+
+    <div class="output-section" id="outputSection">
+        <button class="reset-btn" id="resetBtn">← Start Over</button>
+        
+        <div class="platform-tabs">
+            <button class="platform-tab active" data-platform="linkedin">
+                💼 LinkedIn
+                <span class="count" id="linkedinCount">3</span>
+            </button>
+            <button class="platform-tab" data-platform="twitter">
+                🐦 Twitter/X
+                <span class="count" id="twitterCount">5</span>
+            </button>
+            <button class="platform-tab" data-platform="instagram">
+                📸 Instagram
+                <span class="count" id="instagramCount">3</span>
+            </button>
+        </div>
+
+        <div class="platform-content active" id="linkedinContent"></div>
+        <div class="platform-content" id="twitterContent"></div>
+        <div class="platform-content" id="instagramContent"></div>
+
+        <div class="hashtags-section">
+            <div class="hashtags-title">
+                <span>#️⃣</span>
+                Recommended Hashtags
+            </div>
+            <div class="hashtags-grid" id="hashtagsGrid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const SYSTEM_PROMPT = `You are an expert social media strategist who creates viral, engaging posts. You understand what makes content perform on each platform. Output ONLY valid JSON with no additional text.`;
+
+const USER_PROMPT_TEMPLATE = `Transform this content into high-performing social media posts:
+
+CONTENT:
+"{content}"
+
+SETTINGS: {niche} niche, {tone} tone
+
+CREATE:
+
+LINKEDIN (3 posts):
+- Start with a scroll-stopping hook (question, bold claim, or story opener)
+- Use short paragraphs with line breaks for readability
+- Share genuine insights, not generic advice
+- 150-250 words each
+- End with an engaging question to drive comments
+- Professional but human voice
+
+TWITTER/X (5 tweets):
+- Each tweet MUST be under 280 characters
+- Make each one a standalone valuable insight
+- Mix formats: hot takes, tips, observations, questions
+- Be bold and specific, not generic
+- Use numbers and specifics when possible
+
+INSTAGRAM (3 captions):
+- Hook in the first line that creates curiosity
+- Tell a mini-story or share a personal angle
+- 100-180 words each
+- End with clear CTA (save this, share with a friend, drop a 🔥)
+- Add relevant hashtags at the end (5-8 per post)
+
+HASHTAGS: Generate 12 relevant hashtags mixing popular and niche tags.
+
+Return ONLY this JSON (no markdown, no backticks, no explanation):
+{"linkedin":[{"content":"post1"},{"content":"post2"},{"content":"post3"}],"twitter":[{"content":"tweet1"},{"content":"tweet2"},{"content":"tweet3"},{"content":"tweet4"},{"content":"tweet5"}],"instagram":[{"content":"caption1"},{"content":"caption2"},{"content":"caption3"}],"hashtags":["#tag1","#tag2","#tag3","#tag4","#tag5","#tag6","#tag7","#tag8","#tag9","#tag10","#tag11","#tag12"]}`;
+
+let selectedOptions = { niche: 'General', tone: 'Professional' };
+let generatedContent = { linkedin: [], twitter: [], instagram: [], hashtags: [] };
+
+// Option buttons
+document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const option = btn.dataset.option;
+        document.querySelectorAll(`[data-option="${option}"]`).forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedOptions[option] = btn.dataset.value;
+    });
+});
+
+// Platform tabs
+document.querySelectorAll('.platform-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.platform-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.platform + 'Content').classList.add('active');
+    });
+});
+
+// Render posts
+function renderPosts(posts, container, platform) {
+    container.innerHTML = posts.map((post, index) => `
+        <div class="post-card" data-platform="${platform}" data-index="${index}">
+            <div class="post-header">
+                <div class="post-number">
+                    <span>${index + 1}</span>
+                    ${platform === 'twitter' ? 'Tweet' : 'Post'} ${index + 1}
+                </div>
+                <button class="copy-btn" onclick="copyPost('${platform}', ${index})" title="Copy">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="post-body">
+                <div class="post-content">${post.content}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderHashtags(hashtags) {
+    document.getElementById('hashtagsGrid').innerHTML = hashtags.map(tag => `
+        <span class="hashtag-pill" onclick="copyHashtag(this, '${tag}')">${tag}</span>
+    `).join('');
+}
+
+// Copy functions
+window.copyPost = async function(platform, index) {
+    const content = generatedContent[platform][index].content;
+    await navigator.clipboard.writeText(content);
+    
+    const btn = document.querySelector(`[data-platform="${platform}"][data-index="${index}"] .copy-btn`);
+    btn.classList.add('copied');
+    btn.innerHTML = '✓';
+    setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>`;
+    }, 2000);
+};
+
+window.copyHashtag = async function(element, tag) {
+    await navigator.clipboard.writeText(tag);
+    element.classList.add('copied');
+    setTimeout(() => element.classList.remove('copied'), 1500);
+};
+
+// Generate content using API proxy
+document.getElementById('generateBtn').addEventListener('click', async () => {
+    const topic = document.getElementById('topicInput').value.trim();
+    
+    if (!topic) {
+        document.getElementById('errorMessage').textContent = 'Please enter some content or a topic.';
+        document.getElementById('errorMessage').classList.add('show');
+        return;
+    }
+    
+    document.getElementById('errorMessage').classList.remove('show');
+    
+    const btn = document.getElementById('generateBtn');
+    btn.classList.add('loading');
+    btn.disabled = true;
+    document.getElementById('loadingMessage').classList.add('show');
+    document.getElementById('outputSection').classList.remove('show');
+
+    try {
+        // Truncate content if too long
+        const truncatedContent = topic.length > 3000 ? topic.substring(0, 3000) + '...' : topic;
+        
+        const userPrompt = USER_PROMPT_TEMPLATE
+            .replace('{content}', truncatedContent)
+            .replace('{niche}', selectedOptions.niche)
+            .replace('{tone}', selectedOptions.tone);
+
+        // Call YOUR API proxy instead of Anthropic directly
+        const response = await fetch('/api/claude', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 3000,
+                system: SYSTEM_PROMPT,
+                messages: [{ role: 'user', content: userPrompt }]
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.error.message || 'API request failed');
+        }
+
+        let textContent = data.content
+            ?.filter(block => block.type === 'text')
+            ?.map(block => block.text)
+            ?.join('') || '';
+
+        // Clean up response
+        textContent = textContent.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+        
+        const jsonMatch = textContent.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+            throw new Error('Invalid response format. Please try again.');
+        }
+
+        const parsed = JSON.parse(jsonMatch[0]);
+        
+        generatedContent = {
+            linkedin: parsed.linkedin || [],
+            twitter: parsed.twitter || [],
+            instagram: parsed.instagram || [],
+            hashtags: parsed.hashtags || []
+        };
+
+        // Update counts
+        document.getElementById('linkedinCount').textContent = generatedContent.linkedin.length;
+        document.getElementById('twitterCount').textContent = generatedContent.twitter.length;
+        document.getElementById('instagramCount').textContent = generatedContent.instagram.length;
+
+        // Render
+        renderPosts(generatedContent.linkedin, document.getElementById('linkedinContent'), 'linkedin');
+        renderPosts(generatedContent.twitter, document.getElementById('twitterContent'), 'twitter');
+        renderPosts(generatedContent.instagram, document.getElementById('instagramContent'), 'instagram');
+        renderHashtags(generatedContent.hashtags);
+
+        // Show output
+        document.getElementById('outputSection').classList.add('show');
+        document.getElementById('formSection').style.display = 'none';
+        document.querySelector('.generate-section').style.display = 'none';
+        document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (err) {
+        console.error('Error:', err);
+        document.getElementById('errorMessage').textContent = err.message || 'Failed to generate posts. Please try again.';
+        document.getElementById('errorMessage').classList.add('show');
+    } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        document.getElementById('loadingMessage').classList.remove('show');
+    }
+});
+
+// Reset
+document.getElementById('resetBtn').addEventListener('click', () => {
+    document.getElementById('outputSection').classList.remove('show');
+    document.getElementById('formSection').style.display = 'block';
+    document.querySelector('.generate-section').style.display = 'flex';
+    generatedContent = { linkedin: [], twitter: [], instagram: [], hashtags: [] };
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
