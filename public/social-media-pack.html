@@ -227,10 +227,21 @@ const SYSTEM_PROMPT = `You are an expert social media strategist who creates vir
 
 const USER_PROMPT_TEMPLATE = `Transform this content into high-performing social media posts:
 
+Before writing the final output, internally plan all posts in full length.
+Do not shorten or summarize when producing the final JSON.
+
 CONTENT:
 "{content}"
 
 SETTINGS: {niche} niche, {tone} tone
+
+IMPORTANT OUTPUT RULES:
+- You MUST meet the minimum word counts for every item.
+- LinkedIn posts MUST be at least 150 words each.
+- Instagram captions MUST be at least 100 words each.
+- If you are about to be brief, expand with concrete examples, specificity, and detail.
+- Do NOT compress content to fit JSON. JSON length is not a constraint.
+- If needed, continue writing until all minimums are satisfied.
 
 CREATE:
 
