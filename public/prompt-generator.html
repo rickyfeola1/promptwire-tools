@@ -336,7 +336,7 @@ Write ONLY the prompt itself - no explanations or meta-commentary. The prompt sh
 Make the prompt ${selectedOptions.complexity.toLowerCase()} in detail - ${selectedOptions.complexity === 'Simple' ? 'keep it brief and straightforward' : selectedOptions.complexity === 'Moderate' ? 'include key details and structure' : selectedOptions.complexity === 'Detailed' ? 'be thorough with clear sections and requirements' : 'be comprehensive with expert-level specificity and multiple quality criteria'}.`;
 
     try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch('/api/groq', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
