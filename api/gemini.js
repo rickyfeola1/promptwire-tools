@@ -47,6 +47,7 @@ export default async function handler(req) {
             temperature: 0.8,
             topP: 0.95,
             maxOutputTokens: 4000,
+            responseMimeType: "application/json"
           },
         }),
       }
