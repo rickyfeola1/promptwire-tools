@@ -657,7 +657,7 @@ FORMAT THE RESUME AS FOLLOWS:
 Make the experience bullet points strong with action verbs and quantified achievements where possible. Optimize for ATS systems while keeping it readable for humans.`;
 
     try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch('/api/groq', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
