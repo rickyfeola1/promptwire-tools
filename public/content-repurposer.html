@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Repurposer - Transform Content Into Multiple Formats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @font-face { font-family: 'Futura'; src: local('Futura Extra Bold'); font-weight: 800; font-style: italic; }
+        
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text-primary: #000000;
+            --text-secondary: #4a4a4a;
+            --text-muted: #717171;
+            --accent-primary: #1292eb;
+            --accent-hover: #0d7fd4;
+            --accent-light: rgba(18,146,235,0.1);
+            --border-color: #e5e5e5;
+            --success-color: #10b981;
+            --success-light: rgba(16,185,129,0.1);
+            --error-bg: #fef2f2;
+            --error-border: #fecaca;
+            --error-text: #dc2626;
+            --shadow-lg: 0 8px 30px rgba(18,146,235,0.15);
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
+        
+        .header { text-align: center; margin-bottom: 40px; }
+        .header-icon { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; background: var(--accent-light); border-radius: var(--radius-lg); font-size: 36px; margin-bottom: 20px; }
+        .header h1 { font-family: 'Futura', 'Trebuchet MS', sans-serif; font-size: clamp(32px, 5vw, 48px); font-weight: 800; font-style: italic; margin-bottom: 12px; }
+        .header h1 span { color: var(--accent-primary); }
+        .header p { font-size: 17px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+        
+        .stats-bar { display: flex; justify-content: center; gap: 40px; margin-bottom: 40px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-lg); flex-wrap: wrap; }
+        .stat { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary); }
+        .stat-icon { width: 32px; height: 32px; background: var(--accent-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent-primary); }
+        .stat strong { color: var(--text-primary); }
+        
+        .input-section { background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; transition: border-color 0.3s; }
+        .input-section:focus-within { border-color: var(--accent-primary); }
+        .input-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 12px; }
+        .input-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+        .input-title-icon { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--accent-light); border-radius: 6px; font-size: 14px; }
+        .input-tabs { display: flex; gap: 8px; }
+        .input-tab { padding: 8px 16px; background: transparent; border: 2px solid var(--border-color); border-radius: 100px; font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.25s; }
+        .input-tab:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .input-tab.active { background: var(--accent-primary); border-color: var(--accent-primary); color: white; }
+        .input-body { padding: 20px; }
+        .input-field { display: none; }
+        .input-field.active { display: block; }
+        textarea { width: 100%; min-height: 200px; border: none; outline: none; resize: vertical; font-family: inherit; font-size: 15px; line-height: 1.7; color: var(--text-primary); background: transparent; }
+        textarea::placeholder { color: var(--text-muted); }
+        .url-input { width: 100%; padding: 16px; border: 2px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 15px; color: var(--text-primary); background: var(--bg-primary); transition: border-color 0.3s; }
+        .url-input:focus { outline: none; border-color: var(--accent-primary); }
+        
+        .format-section { margin-bottom: 24px; }
+        .format-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+        .format-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        .format-card { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px 16px; background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all 0.25s; }
+        .format-card:hover { border-color: var(--accent-primary); transform: translateY(-2px); }
+        .format-card.active { border-color: var(--accent-primary); background: var(--accent-light); }
+        .format-icon { font-size: 28px; }
+        .format-name { font-size: 13px; font-weight: 600; text-align: center; }
+        .format-card.active .format-name { color: var(--accent-primary); }
+        
+        .generate-section { display: flex; justify-content: center; margin: 32px 0; }
+        .generate-btn { display: flex; align-items: center; gap: 10px; padding: 18px 48px; background: var(--accent-primary); border: none; border-radius: var(--radius-xl); font-size: 16px; font-weight: 600; color: white; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(18,146,235,0.3); }
+        .generate-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
+        .generate-btn.loading .spinner { display: block; }
+        .generate-btn.loading .btn-text { display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .loading-message { text-align: center; padding: 40px 20px; display: none; }
+        .loading-message.show { display: block; }
+        .loading-message h3 { font-size: 18px; margin-bottom: 8px; }
+        .loading-message p { color: var(--text-muted); font-size: 14px; }
+        .loading-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+        .loading-dots span { font-size: 24px; animation: pulse 1.5s ease-in-out infinite; }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        
+        .output-section { display: none; }
+        .output-section.show { display: block; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; } }
+        
+        .output-card { background: var(--bg-primary); border: 2px solid var(--accent-primary); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 20px; }
+        .output-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--accent-light); border-bottom: 1px solid var(--border-color); }
+        .output-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--accent-primary); }
+        .output-actions { display: flex; gap: 8px; }
+        .action-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
+        .action-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .action-btn.copied { border-color: var(--success-color); color: var(--success-color); background: var(--success-light); }
+        .output-body { padding: 24px; }
+        .output-content { font-size: 15px; line-height: 1.8; color: var(--text-primary); white-space: pre-wrap; }
+        
+        .regenerate-section { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color); }
+        .regenerate-label { width: 100%; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
+        .regenerate-btn { padding: 10px 18px; background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 100px; font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.25s; }
+        .regenerate-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .regenerate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .error-message { background: var(--error-bg); border: 2px solid var(--error-border); color: var(--error-text); padding: 16px 20px; border-radius: var(--radius-md); margin-bottom: 20px; display: none; }
+        .error-message.show { display: block; }
+        
+        .reset-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 auto 24px; padding: 12px 24px; background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all 0.25s; }
+        .reset-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        
+        @media (max-width: 768px) { 
+            .stats-bar { flex-direction: column; align-items: center; } 
+            .input-header { flex-direction: column; align-items: flex-start; }
+            .format-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="header-icon">🔄</div>
+        <h1>Content <span>Repurposer</span></h1>
+        <p>Transform any content into platform-optimized formats. AI-powered repurposing that actually understands each platform's best practices.</p>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stat"><div class="stat-icon">🤖</div><span><strong>AI</strong> powered</span></div>
+        <div class="stat"><div class="stat-icon">📤</div><span><strong>6</strong> output formats</span></div>
+        <div class="stat"><div class="stat-icon">✨</div><span><strong>Platform</strong> optimized</span></div>
+    </div>
+
+    <div id="formSection">
+        <div class="input-section">
+            <div class="input-header">
+                <div class="input-title">
+                    <div class="input-title-icon">📥</div>
+                    Source Content
+                </div>
+                <div class="input-tabs">
+                    <button class="input-tab active" data-tab="text">Paste Text</button>
+                    <button class="input-tab" data-tab="url">YouTube URL</button>
+                </div>
+            </div>
+            <div class="input-body">
+                <div class="input-field active" id="textField">
+                    <textarea id="textInput" placeholder="Paste your article, blog post, transcript, or any content you want to repurpose..."></textarea>
+                </div>
+                <div class="input-field" id="urlField">
+                    <input type="url" class="url-input" id="urlInput" placeholder="https://www.youtube.com/watch?v=...">
+                    <p style="margin-top: 12px; font-size: 13px; color: var(--text-muted);">💡 We'll extract the transcript and repurpose the content for you.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="format-section">
+            <label class="format-label">📤 Choose Output Format</label>
+            <div class="format-grid">
+                <div class="format-card active" data-format="blog">
+                    <div class="format-icon">📝</div>
+                    <div class="format-name">Blog Post</div>
+                </div>
+                <div class="format-card" data-format="linkedin">
+                    <div class="format-icon">💼</div>
+                    <div class="format-name">LinkedIn Post</div>
+                </div>
+                <div class="format-card" data-format="twitter">
+                    <div class="format-icon">🐦</div>
+                    <div class="format-name">Twitter Thread</div>
+                </div>
+                <div class="format-card" data-format="email">
+                    <div class="format-icon">📧</div>
+                    <div class="format-name">Newsletter</div>
+                </div>
+                <div class="format-card" data-format="summary">
+                    <div class="format-icon">📋</div>
+                    <div class="format-name">Key Takeaways</div>
+                </div>
+                <div class="format-card" data-format="script">
+                    <div class="format-icon">🎬</div>
+                    <div class="format-name">Video Script</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="error-message" id="errorMessage"></div>
+
+    <div class="generate-section">
+        <button class="generate-btn" id="generateBtn">
+            <span class="btn-text">🔄 Repurpose Content</span>
+            <div class="spinner"></div>
+        </button>
+    </div>
+
+    <div class="loading-message" id="loadingMessage">
+        <div class="loading-dots">
+            <span>📝</span>
+            <span>✨</span>
+            <span>🚀</span>
+        </div>
+        <h3>Transforming your content...</h3>
+        <p>AI is optimizing for your selected platform. This may take 10-20 seconds.</p>
+    </div>
+
+    <div class="output-section" id="outputSection">
+        <button class="reset-btn" id="resetBtn">← Start Over</button>
+        <div class="output-card">
+            <div class="output-header">
+                <div class="output-title">
+                    <span id="outputIcon">📝</span>
+                    <span id="outputLabel">Blog Post</span>
+                </div>
+                <div class="output-actions">
+                    <button class="action-btn" id="copyBtn" title="Copy to clipboard">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                    </button>
+                    <button class="action-btn" id="downloadBtn" title="Download">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="output-body">
+                <div class="output-content" id="outputContent"></div>
+                
+                <div class="regenerate-section">
+                    <span class="regenerate-label">🔄 Quick convert to another format:</span>
+                    <button class="regenerate-btn" data-format="blog">📝 Blog</button>
+                    <button class="regenerate-btn" data-format="linkedin">💼 LinkedIn</button>
+                    <button class="regenerate-btn" data-format="twitter">🐦 Twitter</button>
+                    <button class="regenerate-btn" data-format="email">📧 Email</button>
+                    <button class="regenerate-btn" data-format="summary">📋 Summary</button>
+                    <button class="regenerate-btn" data-format="script">🎬 Script</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Format configurations
+const formatConfig = {
+    blog: { icon: '📝', label: 'Blog Post' },
+    linkedin: { icon: '💼', label: 'LinkedIn Post' },
+    twitter: { icon: '🐦', label: 'Twitter Thread' },
+    email: { icon: '📧', label: 'Newsletter' },
+    summary: { icon: '📋', label: 'Key Takeaways' },
+    script: { icon: '🎬', label: 'Video Script' }
+};
+
+// Platform-specific system prompts - optimized for Haiku
+const formatPrompts = {
+    blog: `You are an expert blog writer. Transform content into a well-structured, engaging blog post.
+
+REQUIREMENTS:
+- Compelling headline that hooks readers
+- Engaging introduction (2-3 sentences)
+- 3-4 clear sections with ## subheadings
+- Short paragraphs (2-3 sentences max)
+- Conversational but professional tone
+- Strong conclusion with call-to-action
+- 600-900 words total
+
+Write the complete blog post now:`,
+
+    linkedin: `You are a LinkedIn content expert who creates viral posts.
+
+REQUIREMENTS:
+- First line must be a scroll-stopping hook
+- Short lines with line breaks after every 1-2 sentences
+- Use "I" perspective - make it personal
+- Include specific insights, not generic advice
+- End with an engaging question
+- 150-250 words maximum
+- No hashtags in the post body
+- Add 3-5 hashtags at the very end after "---"
+
+Write the LinkedIn post now:`,
+
+    twitter: `You are a Twitter/X thread expert who creates viral threads.
+
+REQUIREMENTS:
+- Start with "🧵" and a powerful hook (under 280 chars)
+- Number each tweet (1/, 2/, etc.)
+- Each tweet MUST be under 280 characters
+- 8-10 tweets total
+- Make each tweet standalone but connected
+- Include a "Retweet the first tweet" CTA near the end
+- End with a follow CTA
+- No hashtags
+
+Write the thread now:`,
+
+    email: `You are an email marketing expert who writes newsletters that get opened and read.
+
+REQUIREMENTS:
+- Subject line that creates curiosity (under 50 chars)
+- Personal, warm opening line
+- Clear value proposition early
+- Short paragraphs and bullet points for key info
+- One clear call-to-action
+- Warm sign-off
+- P.S. line with additional hook
+- 300-500 words total
+
+Format as:
+Subject: [subject line]
+
+[email body]
+
+Write the newsletter now:`,
+
+    summary: `You are an expert at distilling content into clear, actionable summaries.
+
+REQUIREMENTS:
+- One-sentence core message
+- 5-7 bullet points of key takeaways
+- Each bullet should be specific and actionable
+- Include any important stats or quotes
+- Add 3 action items at the end
+- Use clear, concise language
+
+Format as:
+📌 CORE MESSAGE:
+[one sentence]
+
+🎯 KEY TAKEAWAYS:
+• [point 1]
+• [point 2]
+• [point 3]
+• [point 4]
+• [point 5]
+
+✅ ACTION ITEMS:
+1. [action 1]
+2. [action 2]
+3. [action 3]
+
+Write the summary now:`,
+
+    script: `You are a professional video scriptwriter.
+
+REQUIREMENTS:
+- Hook in first 5 seconds that grabs attention
+- Clear intro setting up the value (15-20 seconds)
+- 3-4 main points with timestamps
+- Conversational, spoken language
+- [B-roll suggestions] in brackets
+- Strong CTA at the end
+- 3-4 minute video length
+- Include delivery notes like [pause] or [emphasis]
+
+Format with timestamps like:
+[0:00-0:05] HOOK
+[0:05-0:30] INTRO
+etc.
+
+Write the video script now:`
+};
+
+let selectedFormat = 'blog';
+let currentContent = '';
+let isGenerating = false;
+
+// Tab switching
+document.querySelectorAll('.input-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        document.querySelectorAll('.input-field').forEach(field => {
+            field.classList.remove('active');
+        });
+        document.getElementById(tab.dataset.tab + 'Field').classList.add('active');
+    });
+});
+
+// Format selection
+document.querySelectorAll('.format-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.format-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        selectedFormat = card.dataset.format;
+    });
+});
+
+// Generate content with AI
+async function generateContent(content, format) {
+    const systemPrompt = formatPrompts[format];
+    
+    // Truncate content if too long to save tokens
+    const truncatedContent = content.length > 3000 ? content.substring(0, 3000) + '...[truncated]' : content;
+    
+    const userPrompt = `Transform this content into the specified format. Completely rewrite it - don't just reorganize. Make it engaging and optimized for the platform.
+
+SOURCE CONTENT:
+${truncatedContent}`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 2000,
+            system: systemPrompt,
+            messages: [{ role: 'user', content: userPrompt }]
+        })
+    });
+
+    const data = await response.json();
+    
+    if (data.error) {
+        throw new Error(data.error.message || 'API request failed');
+    }
+
+    const textContent = data.content
+        ?.filter(block => block.type === 'text')
+        ?.map(block => block.text)
+        ?.join('\n\n') || '';
+
+    if (!textContent) {
+        throw new Error('No response generated. Please try again.');
+    }
+
+    return textContent;
+}
+
+// Main generate handler
+document.getElementById('generateBtn').addEventListener('click', async () => {
+    const activeTab = document.querySelector('.input-tab.active').dataset.tab;
+    const content = activeTab === 'text' 
+        ? document.getElementById('textInput').value.trim() 
+        : document.getElementById('urlInput').value.trim();
+    
+    if (!content) {
+        document.getElementById('errorMessage').textContent = 'Please enter some content to repurpose.';
+        document.getElementById('errorMessage').classList.add('show');
+        return;
+    }
+
+    document.getElementById('errorMessage').classList.remove('show');
+    
+    const btn = document.getElementById('generateBtn');
+    btn.classList.add('loading');
+    btn.disabled = true;
+    document.getElementById('loadingMessage').classList.add('show');
+    document.getElementById('outputSection').classList.remove('show');
+    isGenerating = true;
+
+    try {
+        // For URL, we'd normally fetch transcript - for now use placeholder message
+        let sourceContent = content;
+        if (activeTab === 'url') {
+            sourceContent = `[Note: YouTube transcript extraction would happen here in production. For now, please paste the video transcript directly using the "Paste Text" tab.]`;
+        }
+
+        currentContent = sourceContent;
+        const transformed = await generateContent(sourceContent, selectedFormat);
+        
+        document.getElementById('outputContent').textContent = transformed;
+        document.getElementById('outputIcon').textContent = formatConfig[selectedFormat].icon;
+        document.getElementById('outputLabel').textContent = formatConfig[selectedFormat].label;
+        
+        document.getElementById('outputSection').classList.add('show');
+        document.getElementById('formSection').style.display = 'none';
+        document.querySelector('.generate-section').style.display = 'none';
+        document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (err) {
+        document.getElementById('errorMessage').textContent = err.message || 'Failed to transform content. Please try again.';
+        document.getElementById('errorMessage').classList.add('show');
+    } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        document.getElementById('loadingMessage').classList.remove('show');
+        isGenerating = false;
+    }
+});
+
+// Regenerate buttons
+document.querySelectorAll('.regenerate-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        if (!currentContent || isGenerating) return;
+        
+        const newFormat = btn.dataset.format;
+        
+        // Update UI
+        document.querySelectorAll('.format-card').forEach(c => {
+            c.classList.toggle('active', c.dataset.format === newFormat);
+        });
+        document.querySelectorAll('.regenerate-btn').forEach(b => b.disabled = true);
+        btn.textContent = '⏳ Converting...';
+        isGenerating = true;
+
+        try {
+            const transformed = await generateContent(currentContent, newFormat);
+            
+            document.getElementById('outputContent').textContent = transformed;
+            document.getElementById('outputIcon').textContent = formatConfig[newFormat].icon;
+            document.getElementById('outputLabel').textContent = formatConfig[newFormat].label;
+            selectedFormat = newFormat;
+
+        } catch (err) {
+            alert('Failed to convert: ' + err.message);
+        } finally {
+            document.querySelectorAll('.regenerate-btn').forEach(b => {
+                b.disabled = false;
+                const format = b.dataset.format;
+                b.textContent = `${formatConfig[format].icon} ${formatConfig[format].label.split(' ')[0]}`;
+            });
+            isGenerating = false;
+        }
+    });
+});
+
+// Copy button
+document.getElementById('copyBtn').addEventListener('click', async () => {
+    await navigator.clipboard.writeText(document.getElementById('outputContent').textContent);
+    const btn = document.getElementById('copyBtn');
+    btn.classList.add('copied');
+    setTimeout(() => btn.classList.remove('copied'), 2000);
+});
+
+// Download button
+document.getElementById('downloadBtn').addEventListener('click', () => {
+    const blob = new Blob([document.getElementById('outputContent').textContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `repurposed-${selectedFormat}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
+// Reset button
+document.getElementById('resetBtn').addEventListener('click', () => {
+    document.getElementById('outputSection').classList.remove('show');
+    document.getElementById('formSection').style.display = 'block';
+    document.querySelector('.generate-section').style.display = 'flex';
+    document.getElementById('outputContent').textContent = '';
+    currentContent = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
