@@ -37,6 +37,12 @@
         .header h1 { font-family: 'Futura', 'Trebuchet MS', sans-serif; font-size: clamp(32px, 5vw, 48px); font-weight: 800; font-style: italic; margin-bottom: 12px; }
         .header h1 span { color: var(--accent-primary); }
         .header p { font-size: 17px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+
+        /* Usage Counter Banner */
+        .usage-banner { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 12px 20px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: var(--radius-md); margin-bottom: 24px; font-size: 14px; font-weight: 500; }
+        .usage-banner.low { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); }
+        .usage-banner .count { font-weight: 700; color: var(--text-primary); }
+        .usage-banner .upgrade-link { color: var(--accent-primary); text-decoration: underline; cursor: pointer; font-weight: 600; }
         
         .stats-bar { display: flex; justify-content: center; gap: 40px; margin-bottom: 40px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-lg); flex-wrap: wrap; }
         .stat { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary); }
@@ -115,11 +121,49 @@
         .hashtag-pill { padding: 8px 14px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 100px; font-size: 13px; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
         .hashtag-pill:hover { background: var(--accent-light); border-color: var(--accent-primary); color: var(--accent-primary); }
         .hashtag-pill.copied { background: var(--success-light); border-color: var(--success-color); color: var(--success-color); }
+
+        /* Modal Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; backdrop-filter: blur(4px); }
+        .modal-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .modal { background: white; border-radius: var(--radius-xl); max-width: 440px; width: 100%; padding: 32px; position: relative; animation: slideUp 0.3s ease; }
+        .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: var(--bg-secondary); border: none; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+        .modal-close:hover { background: var(--border-color); }
+        
+        .modal-icon { width: 64px; height: 64px; background: var(--accent-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px; }
+        .modal-title { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; }
+        .modal-subtitle { font-size: 15px; color: var(--text-secondary); text-align: center; margin-bottom: 24px; }
+        
+        .modal-input { width: 100%; padding: 14px 16px; border: 2px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 15px; margin-bottom: 16px; transition: border-color 0.3s; }
+        .modal-input:focus { outline: none; border-color: var(--accent-primary); }
+        
+        .modal-btn { width: 100%; padding: 14px; background: var(--accent-primary); border: none; border-radius: var(--radius-md); font-family: inherit; font-size: 15px; font-weight: 600; color: white; cursor: pointer; transition: background 0.3s; }
+        .modal-btn:hover { background: var(--accent-hover); }
+        .modal-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .modal-footer { margin-top: 16px; font-size: 13px; color: var(--text-muted); text-align: center; }
+        .modal-footer a { color: var(--accent-primary); }
+
+        /* Upgrade Modal Specific */
+        .upgrade-modal .modal { max-width: 480px; }
+        .upgrade-modal .modal-icon { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); }
+        
+        .pricing-box { background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; text-align: center; }
+        .pricing-offer { font-size: 14px; color: var(--success-color); font-weight: 600; margin-bottom: 8px; }
+        .pricing-main { font-size: 48px; font-weight: 800; color: var(--text-primary); }
+        .pricing-main span { font-size: 18px; font-weight: 500; color: var(--text-muted); }
+        .pricing-after { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+        
+        .benefits-list { list-style: none; margin-bottom: 24px; }
+        .benefits-list li { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; color: var(--text-secondary); }
+        .benefits-list li::before { content: "✓"; color: var(--success-color); font-weight: 700; }
         
         @media (max-width: 768px) { 
             .options-grid { grid-template-columns: 1fr; }
             .platform-tabs { gap: 8px; }
             .stats-bar { flex-direction: column; align-items: center; }
+            .modal { padding: 24px; }
         }
     </style>
 </head>
@@ -130,6 +174,13 @@
         <h1>Social Media <span>Pack</span></h1>
         <p>Generate platform-optimized social posts instantly. Paste any content and get short, punchy posts tailored for LinkedIn, Twitter, and Instagram.</p>
     </header>
+
+    <!-- Usage Banner (shows for free users) -->
+    <div class="usage-banner" id="usageBanner" style="display: none;">
+        <span>⚡</span>
+        <span><span class="count" id="usageCount">3</span> of 3 free uses remaining today</span>
+        <span class="upgrade-link" onclick="showUpgradeModal()">Upgrade for unlimited</span>
+    </div>
 
     <div class="stats-bar">
         <div class="stat"><div class="stat-icon">🤖</div><span><strong>AI</strong> powered</span></div>
@@ -222,34 +273,209 @@ The AI will extract key insights and create short, engaging posts optimized for 
     </div>
 </div>
 
+<!-- Email Gate Modal -->
+<div class="modal-overlay" id="emailModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeEmailModal()">×</button>
+        <div class="modal-icon">✉️</div>
+        <h2 class="modal-title">Enter your email to continue</h2>
+        <p class="modal-subtitle">Get free access to this tool plus weekly tips on growing your audience.</p>
+        <input type="email" class="modal-input" id="emailInput" placeholder="your@email.com">
+        <button class="modal-btn" id="emailSubmitBtn" onclick="submitEmail()">
+            Continue Free →
+        </button>
+        <p class="modal-footer">No spam. Unsubscribe anytime.</p>
+    </div>
+</div>
+
+<!-- Upgrade Modal -->
+<div class="modal-overlay upgrade-modal" id="upgradeModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeUpgradeModal()">×</button>
+        <div class="modal-icon">🚀</div>
+        <h2 class="modal-title">You've hit your daily limit</h2>
+        <p class="modal-subtitle">Upgrade to Pro for unlimited access to all 20+ AI tools.</p>
+        
+        <div class="pricing-box">
+            <div class="pricing-offer">🔥 Limited offer: First month</div>
+            <div class="pricing-main">$5 <span>/ first month</span></div>
+            <div class="pricing-after">Then $27/month. Cancel anytime.</div>
+        </div>
+        
+        <ul class="benefits-list">
+            <li>Unlimited generations on all tools</li>
+            <li>Access to 20+ premium AI tools</li>
+            <li>Priority support</li>
+            <li>New tools added monthly</li>
+        </ul>
+        
+        <button class="modal-btn" onclick="upgradeToPro()">
+            Upgrade to Pro →
+        </button>
+        <p class="modal-footer">Secure payment via Stripe</p>
+    </div>
+</div>
+
 <script>
+// ============================================
+// CONFIGURATION
+// ============================================
+const CONFIG = {
+    DAILY_LIMIT: 3,
+    TOOL_NAME: 'social-media-pack',
+    STRIPE_LINK: 'https://buy.stripe.com/YOUR_STRIPE_LINK_HERE' // Replace with your Stripe link
+};
+
+// ============================================
+// USER STATE MANAGEMENT
+// ============================================
+function getUserState() {
+    const stored = localStorage.getItem('promptwire_user');
+    if (!stored) return null;
+    
+    const state = JSON.parse(stored);
+    
+    // Reset daily usage if it's a new day
+    const today = new Date().toDateString();
+    if (state.lastUseDate !== today) {
+        state.usesToday = 0;
+        state.lastUseDate = today;
+        saveUserState(state);
+    }
+    
+    return state;
+}
+
+function saveUserState(state) {
+    localStorage.setItem('promptwire_user', JSON.stringify(state));
+}
+
+function createNewUser(email) {
+    const state = {
+        email: email,
+        usesToday: 0,
+        lastUseDate: new Date().toDateString(),
+        createdAt: new Date().toISOString()
+    };
+    saveUserState(state);
+    return state;
+}
+
+function incrementUsage() {
+    const state = getUserState();
+    if (state) {
+        state.usesToday += 1;
+        saveUserState(state);
+        updateUsageBanner();
+    }
+}
+
+function canUseToday() {
+    const state = getUserState();
+    if (!state) return true; // Will show email modal
+    return state.usesToday < CONFIG.DAILY_LIMIT;
+}
+
+function getRemainingUses() {
+    const state = getUserState();
+    if (!state) return CONFIG.DAILY_LIMIT;
+    return Math.max(0, CONFIG.DAILY_LIMIT - state.usesToday);
+}
+
+// ============================================
+// UI UPDATES
+// ============================================
+function updateUsageBanner() {
+    const state = getUserState();
+    const banner = document.getElementById('usageBanner');
+    const countEl = document.getElementById('usageCount');
+    
+    if (state) {
+        const remaining = getRemainingUses();
+        banner.style.display = 'flex';
+        countEl.textContent = remaining;
+        
+        if (remaining <= 1) {
+            banner.classList.add('low');
+        } else {
+            banner.classList.remove('low');
+        }
+    }
+}
+
+// ============================================
+// MODALS
+// ============================================
+function showEmailModal() {
+    document.getElementById('emailModal').classList.add('show');
+    document.getElementById('emailInput').focus();
+}
+
+function closeEmailModal() {
+    document.getElementById('emailModal').classList.remove('show');
+}
+
+function showUpgradeModal() {
+    document.getElementById('upgradeModal').classList.add('show');
+}
+
+function closeUpgradeModal() {
+    document.getElementById('upgradeModal').classList.remove('show');
+}
+
+async function submitEmail() {
+    const emailInput = document.getElementById('emailInput');
+    const email = emailInput.value.trim();
+    const btn = document.getElementById('emailSubmitBtn');
+    
+    if (!email || !email.includes('@')) {
+        emailInput.style.borderColor = 'var(--error-text)';
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.textContent = 'Please wait...';
+    
+    try {
+        // Send to Beehiiv via API proxy
+        await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        
+        // Create user state
+        createNewUser(email);
+        updateUsageBanner();
+        closeEmailModal();
+        
+        // Now trigger the actual generation
+        runGeneration();
+        
+    } catch (err) {
+        console.error('Email subscribe error:', err);
+        // Still allow usage even if email fails
+        createNewUser(email);
+        closeEmailModal();
+        runGeneration();
+    }
+}
+
+function upgradeToPro() {
+    window.open(CONFIG.STRIPE_LINK, '_blank');
+}
+
+// ============================================
+// MAIN GENERATION LOGIC
+// ============================================
 const SYSTEM_PROMPT = `You are an expert social media strategist who creates viral, engaging posts. You understand what makes content perform on each platform. Output ONLY valid JSON with no additional text.`;
 
 const USER_PROMPT_TEMPLATE = `Transform this content into high-performing social media posts:
-
-Before writing the final output, internally plan all posts in full length.
-Do not shorten or summarize when producing the final JSON.
 
 CONTENT:
 "{content}"
 
 SETTINGS: {niche} niche, {tone} tone
-
-IMPORTANT OUTPUT RULES:
-- You MUST meet the minimum word counts for every item.
-- LinkedIn posts MUST be at least 150 words each.
-- Instagram captions MUST be at least 100 words each.
-- If you are about to be brief, expand with concrete examples, specificity, and detail.
-- Do NOT compress content to fit JSON. JSON length is not a constraint.
-- If needed, continue writing until all minimums are satisfied.
-
-FORMAT & STYLE RULES (IMPORTANT):
-- Use frequent line breaks. No wall-of-text paragraphs.
-- Max 2 sentences per paragraph.
-- Add a blank line between paragraphs.
-- Use emojis naturally to add emphasis and rhythm (1–2 emojis per post).
-- Emojis must fit the platform and context (no spammy emoji chains).
-- Write like a human scrolling on mobile.
 
 CREATE:
 
@@ -282,6 +508,7 @@ Return ONLY this JSON (no markdown, no backticks, no explanation):
 
 let selectedOptions = { niche: 'General', tone: 'Professional' };
 let generatedContent = { linkedin: [], twitter: [], instagram: [], hashtags: [] };
+let pendingGeneration = false;
 
 // Option buttons
 document.querySelectorAll('.option-btn').forEach(btn => {
@@ -355,8 +582,8 @@ window.copyHashtag = async function(element, tag) {
     setTimeout(() => element.classList.remove('copied'), 1500);
 };
 
-// Generate content using API proxy
-document.getElementById('generateBtn').addEventListener('click', async () => {
+// Generate button click handler
+document.getElementById('generateBtn').addEventListener('click', () => {
     const topic = document.getElementById('topicInput').value.trim();
     
     if (!topic) {
@@ -367,14 +594,35 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     
     document.getElementById('errorMessage').classList.remove('show');
     
+    const userState = getUserState();
+    
+    // If no user state, show email modal
+    if (!userState) {
+        pendingGeneration = true;
+        showEmailModal();
+        return;
+    }
+    
+    // Check if user has remaining uses
+    if (!canUseToday()) {
+        showUpgradeModal();
+        return;
+    }
+    
+    // Run generation
+    runGeneration();
+});
+
+async function runGeneration() {
+    const topic = document.getElementById('topicInput').value.trim();
     const btn = document.getElementById('generateBtn');
+    
     btn.classList.add('loading');
     btn.disabled = true;
     document.getElementById('loadingMessage').classList.add('show');
     document.getElementById('outputSection').classList.remove('show');
 
     try {
-        // Truncate content if too long
         const truncatedContent = topic.length > 3000 ? topic.substring(0, 3000) + '...' : topic;
         
         const userPrompt = USER_PROMPT_TEMPLATE
@@ -382,7 +630,6 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
             .replace('{niche}', selectedOptions.niche)
             .replace('{tone}', selectedOptions.tone);
 
-        // Call YOUR API proxy instead of Anthropic directly
         const response = await fetch('/api/groq', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -403,7 +650,6 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
             ?.map(block => block.text)
             ?.join('') || '';
 
-        // Clean up response
         textContent = textContent.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
         
         const jsonMatch = textContent.match(/\{[\s\S]*\}/);
@@ -420,18 +666,18 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
             hashtags: parsed.hashtags || []
         };
 
-        // Update counts
+        // Increment usage AFTER successful generation
+        incrementUsage();
+
         document.getElementById('linkedinCount').textContent = generatedContent.linkedin.length;
         document.getElementById('twitterCount').textContent = generatedContent.twitter.length;
         document.getElementById('instagramCount').textContent = generatedContent.instagram.length;
 
-        // Render
         renderPosts(generatedContent.linkedin, document.getElementById('linkedinContent'), 'linkedin');
         renderPosts(generatedContent.twitter, document.getElementById('twitterContent'), 'twitter');
         renderPosts(generatedContent.instagram, document.getElementById('instagramContent'), 'instagram');
         renderHashtags(generatedContent.hashtags);
 
-        // Show output
         document.getElementById('outputSection').classList.add('show');
         document.getElementById('formSection').style.display = 'none';
         document.querySelector('.generate-section').style.display = 'none';
@@ -446,7 +692,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         btn.disabled = false;
         document.getElementById('loadingMessage').classList.remove('show');
     }
-});
+}
 
 // Reset
 document.getElementById('resetBtn').addEventListener('click', () => {
@@ -455,6 +701,16 @@ document.getElementById('resetBtn').addEventListener('click', () => {
     document.querySelector('.generate-section').style.display = 'flex';
     generatedContent = { linkedin: [], twitter: [], instagram: [], hashtags: [] };
     window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Email input enter key
+document.getElementById('emailInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') submitEmail();
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    updateUsageBanner();
 });
 </script>
 </body>
