@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools - Replace 90% of Your Paid Subscriptions | PromptWire AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @font-face { font-family: 'Futura'; src: local('Futura Extra Bold'); font-weight: 800; font-style: italic; }
+        
+        :root {
+            --white: #ffffff;
+            --black: #000000;
+            --blue: #1292eb;
+            --blue-light: #e8f4fd;
+            --blue-hover: #0d7fd4;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --success-color: #10b981;
+            --orange: #f59e0b;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--gray-900); line-height: 1.6; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 60px 24px 80px; }
+
+        /* Header */
+        .header { text-align: center; margin-bottom: 48px; }
+        .header-icon { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; background: var(--blue-light); border-radius: var(--radius-lg); font-size: 36px; margin-bottom: 20px; }
+        .header h1 { font-family: 'Futura', 'Trebuchet MS', sans-serif; font-size: clamp(32px, 5vw, 48px); font-weight: 800; font-style: italic; margin-bottom: 12px; }
+        .header h1 span { color: var(--blue); }
+        .header p { font-size: 17px; color: var(--gray-500); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+        
+        /* Replaces Banner */
+        .replaces-banner { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
+        .replaces-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--gray-100); border-radius: 100px; font-size: 13px; color: var(--gray-600); }
+        .replaces-item .strike { text-decoration: line-through; color: var(--gray-400); }
+        .replaces-item .arrow { color: var(--blue); font-weight: 600; }
+        .replaces-item .free-text { color: var(--success-color); font-weight: 600; }
+
+        /* Stats Row */
+        .stats-row { display: flex; justify-content: center; gap: 48px; margin-top: 32px; padding: 20px; background: var(--gray-50); border-radius: var(--radius-lg); flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--blue); }
+        .stat-label { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+
+        /* Filter Tags */
+        .filter-section { margin-bottom: 32px; }
+        .filter-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .filter-tag { padding: 10px 20px; font-size: 14px; font-weight: 600; background: var(--white); border: 2px solid var(--gray-200); border-radius: 100px; color: var(--gray-600); cursor: pointer; transition: all 0.2s ease; }
+        .filter-tag:hover { border-color: var(--blue); color: var(--blue); }
+        .filter-tag.active { background: var(--blue); border-color: var(--blue); color: var(--white); }
+
+        /* Section Headers */
+        .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+        .section-badge { padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .section-badge.free { background: var(--success-color); color: white; }
+        .section-badge.pro { background: var(--blue); color: white; }
+        .section-title { font-size: 20px; font-weight: 700; color: var(--gray-900); }
+        .section-subtitle { font-size: 14px; color: var(--gray-500); margin-left: auto; }
+
+        /* App Grid */
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; margin-bottom: 48px; }
+
+        /* App Card */
+        .app-card { background: var(--white); border: 2px solid var(--gray-200); border-radius: var(--radius-lg); padding: 24px; cursor: pointer; transition: all 0.25s ease; position: relative; overflow: hidden; }
+        .app-card:hover { border-color: var(--blue); box-shadow: 0 8px 30px rgba(18, 146, 235, 0.12); transform: translateY(-2px); }
+        .app-card.locked { opacity: 0.7; }
+        .app-card.locked:hover { border-color: var(--gray-300); box-shadow: none; transform: none; }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .card-category { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--blue); background: var(--blue-light); padding: 6px 12px; border-radius: 100px; }
+        .card-badge { padding: 6px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; }
+        .card-badge.free { background: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+        .card-badge.pro { background: var(--gray-100); color: var(--gray-500); }
+        
+        .card-icon { width: 56px; height: 56px; background: var(--gray-100); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 28px; }
+        .card-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: var(--gray-900); }
+        .card-description { font-size: 14px; color: var(--gray-500); margin-bottom: 16px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .card-replaces { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 10px 14px; background: var(--gray-50); border-radius: 8px; }
+        .card-replaces-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--gray-400); }
+        .card-replaces-value { font-size: 13px; font-weight: 600; color: var(--gray-700); margin-left: auto; }
+        .card-replaces-value .strike { text-decoration: line-through; color: var(--gray-400); margin-right: 4px; }
+        .card-replaces-value .savings { color: var(--success-color); }
+        
+        .card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .card-tag { padding: 6px 12px; font-size: 12px; font-weight: 500; background: var(--gray-100); border-radius: 100px; color: var(--gray-600); }
+        
+        .card-cta { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--gray-200); }
+        .card-cta-text { font-size: 13px; font-weight: 600; color: var(--blue); }
+        .card-cta-arrow { width: 32px; height: 32px; background: var(--blue-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--blue); transition: all 0.2s; }
+        .app-card:hover .card-cta-arrow { background: var(--blue); color: white; }
+
+        .lock-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.6); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        .app-card.locked:hover .lock-overlay { opacity: 1; }
+        .lock-icon { width: 48px; height: 48px; background: var(--gray-800); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+
+        /* Usage Banner */
+        .usage-banner { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 16px 24px; background: var(--blue-light); border: 2px solid var(--blue); border-radius: var(--radius-md); margin-bottom: 32px; }
+        .usage-banner-icon { font-size: 24px; }
+        .usage-banner-text { font-size: 14px; color: var(--gray-700); }
+        .usage-banner-text strong { color: var(--blue); }
+        .usage-banner-upgrade { padding: 8px 16px; background: var(--black); border-radius: 100px; font-size: 12px; font-weight: 600; color: white; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .usage-banner-upgrade:hover { background: var(--blue); }
+
+        /* Pro CTA Section */
+        .pro-cta-banner { background: var(--gray-900); border-radius: var(--radius-xl); padding: 48px 40px; margin: 48px 0; text-align: center; color: white; }
+        .pro-cta-banner .social-proof { font-size: 13px; color: var(--blue); font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .pro-cta-banner .social-proof .dot { width: 8px; height: 8px; background: var(--success-color); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .pro-cta-banner h3 { font-family: 'Futura', sans-serif; font-size: 32px; font-weight: 800; font-style: italic; margin-bottom: 12px; }
+        .pro-cta-banner h3 span { color: var(--blue); }
+        .pro-cta-banner > p { font-size: 16px; color: #a1a1a1; max-width: 550px; margin: 0 auto 24px; line-height: 1.7; }
+        
+        .pro-benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .pro-benefit { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left; }
+        .pro-benefit-icon { font-size: 20px; }
+        .pro-benefit-text { font-size: 14px; font-weight: 500; }
+        
+        .pro-cta-banner .cta-btn { display: inline-flex; align-items: center; gap: 8px; padding: 18px 40px; background: var(--blue); border: none; border-radius: 100px; font-size: 16px; font-weight: 600; color: white; cursor: pointer; transition: all 0.3s; }
+        .pro-cta-banner .cta-btn:hover { background: var(--blue-hover); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(18, 146, 235, 0.4); }
+        .pro-cta-banner .cta-subtext { margin-top: 12px; font-size: 13px; color: #717171; }
+
+        /* More Apps Section */
+        .more-apps-section { text-align: center; padding: 60px 24px; border: 2px dashed var(--gray-300); border-radius: var(--radius-xl); margin-top: 24px; background: var(--gray-50); }
+        .more-apps-icon { font-size: 48px; margin-bottom: 16px; }
+        .more-apps-section h3 { font-size: 24px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+        .more-apps-section p { font-size: 15px; color: var(--gray-500); margin-bottom: 24px; }
+        .more-apps-btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: var(--blue); border: none; border-radius: 100px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; transition: all 0.3s; }
+        .more-apps-btn:hover { background: var(--blue-hover); transform: translateY(-2px); }
+
+        /* Modal Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1000; display: none; justify-content: center; align-items: flex-start; padding: 40px 24px; overflow-y: auto; }
+        .modal-overlay.show { display: flex; }
+        
+        .modal { background: white; border-radius: var(--radius-xl); max-width: 440px; width: 100%; padding: 32px; position: relative; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3); margin: auto; }
+        .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: var(--gray-100); border: none; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-500); transition: all 0.2s; z-index: 10; }
+        .modal-close:hover { background: var(--gray-200); }
+        
+        .modal-icon { width: 64px; height: 64px; background: var(--blue-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px; }
+        .modal-title { font-family: 'Futura', sans-serif; font-size: 24px; font-weight: 800; font-style: italic; text-align: center; margin-bottom: 8px; }
+        .modal-title span { color: var(--blue); }
+        .modal-subtitle { font-size: 15px; color: var(--gray-500); text-align: center; margin-bottom: 24px; line-height: 1.6; }
+        
+        .modal-input { width: 100%; padding: 14px 16px; border: 2px solid var(--gray-200); border-radius: var(--radius-md); font-family: inherit; font-size: 15px; margin-bottom: 16px; transition: border-color 0.3s; }
+        .modal-input:focus { outline: none; border-color: var(--blue); }
+        .modal-input.error { border-color: #dc2626; }
+        
+        .modal-btn { width: 100%; padding: 14px; background: var(--blue); border: none; border-radius: var(--radius-md); font-family: inherit; font-size: 15px; font-weight: 600; color: white; cursor: pointer; transition: all 0.3s; }
+        .modal-btn:hover { background: var(--blue-hover); }
+        .modal-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .modal-footer { margin-top: 16px; font-size: 13px; color: var(--gray-400); text-align: center; }
+
+        /* Email Modal */
+        #emailModal { z-index: 1100; }
+        .tools-replaced { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .tool-tag { padding: 6px 12px; background: var(--gray-100); border-radius: 100px; font-size: 12px; color: var(--gray-500); display: flex; align-items: center; gap: 6px; }
+        .tool-tag .strike { text-decoration: line-through; color: var(--gray-400); }
+        .tool-tag .arrow { color: var(--blue); }
+
+        /* Upgrade Modal */
+        .upgrade-modal .modal { max-width: 520px; background: var(--gray-900); color: white; }
+        .upgrade-modal .modal-close { background: rgba(255,255,255,0.1); color: white; z-index: 10; }
+        .upgrade-modal .modal-close:hover { background: rgba(255,255,255,0.2); }
+        .upgrade-modal .modal-icon { background: var(--blue); }
+        .upgrade-modal .modal-title { color: white; }
+        .upgrade-modal .modal-subtitle { color: #a1a1a1; }
+        
+        .benefits-list { margin-bottom: 28px; }
+        .benefit-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .benefit-item:last-child { border-bottom: none; }
+        .benefit-icon { width: 36px; height: 36px; background: rgba(18, 146, 235, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+        .benefit-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .benefit-content p { font-size: 13px; color: #a1a1a1; line-height: 1.5; }
+        
+        .pricing-section { text-align: center; padding: 24px; background: rgba(255,255,255,0.05); border-radius: var(--radius-lg); margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.1); }
+        .pricing-label { font-size: 13px; color: var(--blue); font-weight: 600; margin-bottom: 8px; }
+        .pricing-amount { font-size: 48px; font-weight: 800; }
+        .pricing-amount span { font-size: 18px; font-weight: 400; color: #a1a1a1; }
+        .pricing-note { font-size: 13px; color: #717171; margin-top: 4px; }
+        
+        .upgrade-btn { width: 100%; padding: 16px; background: var(--blue); border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; color: white; cursor: pointer; transition: all 0.3s; }
+        .upgrade-btn:hover { background: var(--blue-hover); transform: translateY(-2px); }
+        
+        .upgrade-modal .modal-footer { color: #717171; }
+
+        @media (max-width: 768px) {
+            .app-grid { grid-template-columns: 1fr; }
+            .stats-row { gap: 24px; }
+            .replaces-banner { gap: 8px; }
+            .replaces-item { font-size: 11px; padding: 6px 12px; }
+            .usage-banner { flex-direction: column; text-align: center; }
+            .pro-benefits-grid { grid-template-columns: 1fr; }
+            .filter-tags { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 8px; }
+            .filter-tag { flex-shrink: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="header-icon">🤖</div>
+        <h1>AI Tools <span>Hub</span></h1>
+        <p>The only AI toolkit you need. 20+ tools that replace $200+/month in subscriptions. Generate content, optimize SEO, build strategies — all in one place.</p>
+        
+        <div class="replaces-banner">
+            <div class="replaces-item"><span class="strike">$29 Jasper</span> <span class="arrow">→</span> <span class="free-text">Free</span></div>
+            <div class="replaces-item"><span class="strike">$19 Copy.ai</span> <span class="arrow">→</span> <span class="free-text">Free</span></div>
+            <div class="replaces-item"><span class="strike">$49 Surfer SEO</span> <span class="arrow">→</span> <span class="free-text">Free</span></div>
+            <div class="replaces-item"><span class="strike">$15 Grammarly</span> <span class="arrow">→</span> <span class="free-text">Free</span></div>
+        </div>
+        
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-value">20+</div>
+                <div class="stat-label">AI Tools</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">90%</div>
+                <div class="stat-label">Tools Replaced</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">$200+</div>
+                <div class="stat-label">Monthly Savings</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Tags -->
+    <div class="filter-section">
+        <div class="filter-tags" id="filterTags">
+            <button class="filter-tag active" data-filter="all">All Tools</button>
+            <button class="filter-tag" data-filter="content">Content</button>
+            <button class="filter-tag" data-filter="marketing">Marketing</button>
+            <button class="filter-tag" data-filter="seo">SEO</button>
+            <button class="filter-tag" data-filter="productivity">Productivity</button>
+            <button class="filter-tag" data-filter="business">Business</button>
+        </div>
+    </div>
+
+    <!-- Usage Banner -->
+    <div class="usage-banner" id="usageBanner" style="display: none;">
+        <span class="usage-banner-icon">⚡</span>
+        <span class="usage-banner-text"><strong id="usageCount">2</strong> of 2 free uses remaining today</span>
+        <a class="usage-banner-upgrade" onclick="showUpgradeModal()">Upgrade → Unlimited</a>
+    </div>
+
+    <!-- Free Apps Section -->
+    <div class="section-header">
+        <span class="section-badge free">Free</span>
+        <h2 class="section-title">Starter Tools</h2>
+        <span class="section-subtitle">2 uses per day</span>
+    </div>
+    <div class="app-grid" id="freeAppsGrid"></div>
+
+    <!-- Pro CTA Banner -->
+    <div class="pro-cta-banner">
+        <div class="social-proof">
+            <span class="dot"></span>
+            147 members saved 11+ hours last week
+        </div>
+        <h3>One Subscription. <span>Every Tool.</span></h3>
+        <p>Stop juggling 10 different AI tools. Get unlimited access to all 20+ tools, plus weekly additions and the full PromptWire newsletter.</p>
+        
+        <div class="pro-benefits-grid">
+            <div class="pro-benefit">
+                <span class="pro-benefit-icon">♾️</span>
+                <span class="pro-benefit-text">Unlimited generations</span>
+            </div>
+            <div class="pro-benefit">
+                <span class="pro-benefit-icon">🧠</span>
+                <span class="pro-benefit-text">Advanced AI quality</span>
+            </div>
+            <div class="pro-benefit">
+                <span class="pro-benefit-icon">🔧</span>
+                <span class="pro-benefit-text">20+ tools (monthly adds)</span>
+            </div>
+            <div class="pro-benefit">
+                <span class="pro-benefit-icon">📬</span>
+                <span class="pro-benefit-text">Full newsletter + automations</span>
+            </div>
+        </div>
+        
+        <button class="cta-btn" onclick="showUpgradeModal()">
+            Get Pro Access → $4.5 first month
+        </button>
+        <div class="cta-subtext">Then $17.99/month. Cancel anytime.</div>
+    </div>
+
+    <!-- Pro Apps Section -->
+    <div class="section-header">
+        <span class="section-badge pro">Pro</span>
+        <h2 class="section-title">Premium Tools</h2>
+    </div>
+    <div class="app-grid" id="proAppsGrid"></div>
+    
+    <!-- More Apps Coming -->
+    <div class="more-apps-section">
+        <div class="more-apps-icon">✨</div>
+        <h3>+ New Tools Added Monthly</h3>
+        <p>We ship new AI tools every month. Pro members get instant access.</p>
+        <button class="more-apps-btn" onclick="showUpgradeModal()">Get Pro Access →</button>
+    </div>
+</div>
+
+<!-- Email Gate Modal -->
+<div class="modal-overlay" id="emailModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeEmailModal()">×</button>
+        <div class="modal-icon">✉️</div>
+        <h2 class="modal-title">One Platform. <span>Every Tool.</span></h2>
+        <p class="modal-subtitle">Enter your email to use this tool and get weekly AI tips that save you hours.</p>
+        
+        <div class="tools-replaced">
+            <div class="tool-tag"><span class="strike">$29 Jasper</span> <span class="arrow">→</span> Free</div>
+            <div class="tool-tag"><span class="strike">$49 Surfer</span> <span class="arrow">→</span> Free</div>
+            <div class="tool-tag"><span class="strike">$19 Copy.ai</span> <span class="arrow">→</span> Free</div>
+        </div>
+        
+        <input type="email" class="modal-input" id="emailInput" placeholder="your@email.com">
+        <button class="modal-btn" id="emailSubmitBtn" onclick="submitEmail()">
+            Get Free Access →
+        </button>
+        <p class="modal-footer">No spam. Unsubscribe anytime.</p>
+    </div>
+</div>
+
+<!-- Upgrade Modal -->
+<div class="modal-overlay upgrade-modal" id="upgradeModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeUpgradeModal()">×</button>
+        
+        <div class="modal-icon">🚀</div>
+        <h2 class="modal-title">Become The <span>Operator</span></h2>
+        <p class="modal-subtitle">AI is reshaping every industry. The people who learn to operate it now will run things later.</p>
+        
+        <div class="benefits-list">
+            <div class="benefit-item">
+                <div class="benefit-icon">🔧</div>
+                <div class="benefit-content">
+                    <h4>20+ AI Tools (Unlimited Access)</h4>
+                    <p>Social media generator, SEO optimizer, content repurposer, resume builder, and more. New tools added monthly.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">⚡</div>
+                <div class="benefit-content">
+                    <h4>Weekly AI Automations</h4>
+                    <p>Each week: one complete workflow you can copy into your tools and start using immediately.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">📚</div>
+                <div class="benefit-content">
+                    <h4>Full Prompt Library</h4>
+                    <p>100+ battle-tested prompts for content, research, operations, and sales. New ones added weekly.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">📡</div>
+                <div class="benefit-content">
+                    <h4>AI Industry Briefings</h4>
+                    <p>When something big shifts in AI, you'll know what it means and how to use it before everyone else.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="pricing-section">
+            <div class="pricing-label">🔥 Limited: First month</div>
+            <div class="pricing-amount">$4.5 <span>/ month</span></div>
+            <div class="pricing-note">Then $17.99/month. Cancel anytime.</div>
+        </div>
+        
+        <button class="upgrade-btn" onclick="upgradeToPro()">
+            Get Pro Access →
+        </button>
+        <p class="modal-footer">Join 500+ operators already inside</p>
+    </div>
+</div>
+
+<script>
+// ============================================
+// CONFIGURATION
+// ============================================
+const CONFIG = {
+    STRIPE_LINK: 'https://www.promptwireai.com/upgrade?offer_id=a8b98c13-33ca-49ec-82b8-2ae900eb49fa',
+    API_URL: '/api/subscribe',
+    DAILY_LIMIT: 2
+};
+
+// ============================================
+// APPS DATA
+// ============================================
+const freeApps = [
+    {
+        id: 1,
+        title: "Social Media Pack",
+        description: "Generate a week's worth of LinkedIn, Twitter, and Instagram posts from any topic or content.",
+        category: "content",
+        tags: ["social media", "content", "marketing"],
+        icon: "📱",
+        replaces: "Buffer + Jasper",
+        savings: "$50/mo",
+        url: "/tools/social-media-pack"
+    },
+    {
+        id: 2,
+        title: "SEO Content Optimizer",
+        description: "Optimize any text for search engines. Get keyword suggestions, readability scores, and improvements.",
+        category: "seo",
+        tags: ["SEO", "content", "optimization"],
+        icon: "🔍",
+        replaces: "Surfer SEO",
+        savings: "$49/mo",
+        url: "/tools/seo-optimizer"
+    },
+    {
+        id: 3,
+        title: "Text Humanizer",
+        description: "Transform AI-generated text into natural, human-sounding content that bypasses AI detectors.",
+        category: "content",
+        tags: ["writing", "AI detection", "content"],
+        icon: "✨",
+        replaces: "Undetectable AI",
+        savings: "$15/mo",
+        url: "/tools/text-humanizer"
+    },
+    {
+        id: 4,
+        title: "Business Idea Generator",
+        description: "Validate and generate profitable business ideas based on your skills, budget, and market trends.",
+        category: "business",
+        tags: ["business", "strategy", "validation"],
+        icon: "💡",
+        replaces: "Consultant",
+        savings: "$100+",
+        url: "/tools/business-idea-generator"
+    }
+];
+
+const proApps = [
+    { id: 101, title: "Content Repurposer", description: "Transform one piece of content into 10+ formats for every platform.", category: "content", tags: ["repurposing", "content", "efficiency"], icon: "♻️", replaces: "Repurpose.io", savings: "$25/mo" },
+    { id: 102, title: "Resume Builder", description: "Create ATS-optimized resumes tailored to specific job descriptions.", category: "productivity", tags: ["career", "resume", "jobs"], icon: "📄", replaces: "Resume.io", savings: "$15/mo" },
+    { id: 103, title: "Email Sequence Writer", description: "Generate complete email sequences for launches, nurturing, or sales.", category: "marketing", tags: ["email", "marketing", "copywriting"], icon: "📧", replaces: "Copy.ai", savings: "$19/mo" },
+    { id: 104, title: "Video Script Generator", description: "Create engaging video scripts with hooks, retention techniques, and CTAs.", category: "content", tags: ["video", "YouTube", "scripts"], icon: "🎬", replaces: "Jasper", savings: "$29/mo" },
+    { id: 105, title: "Blog Post Writer", description: "Transform topics into SEO-optimized blog posts with proper structure.", category: "content", tags: ["blogging", "SEO", "writing"], icon: "✍️", replaces: "Writesonic", savings: "$19/mo" },
+    { id: 106, title: "Ad Copy Generator", description: "Create high-converting ad copy for Facebook, Google, and LinkedIn ads.", category: "marketing", tags: ["ads", "copywriting", "conversion"], icon: "📣", replaces: "AdCreative", savings: "$29/mo" },
+    { id: 107, title: "Landing Page Copy", description: "Generate persuasive landing page copy with headlines, benefits, and CTAs.", category: "marketing", tags: ["landing pages", "copywriting", "conversion"], icon: "🎯", replaces: "Copy.ai", savings: "$19/mo" },
+    { id: 108, title: "Product Description Writer", description: "Write compelling product descriptions that drive purchases.", category: "content", tags: ["ecommerce", "products", "copywriting"], icon: "🛍️", replaces: "Jasper", savings: "$29/mo" },
+    { id: 109, title: "Meeting Notes Processor", description: "Transform messy meeting notes into organized summaries with action items.", category: "productivity", tags: ["meetings", "notes", "productivity"], icon: "📝", replaces: "Otter.ai", savings: "$17/mo" },
+    { id: 110, title: "Cold Email Writer", description: "Craft personalized cold emails that get responses using proven frameworks.", category: "marketing", tags: ["outreach", "sales", "email"], icon: "✉️", replaces: "Lavender", savings: "$29/mo" },
+    { id: 111, title: "LinkedIn Bio Generator", description: "Create attention-grabbing LinkedIn bios that attract opportunities.", category: "productivity", tags: ["LinkedIn", "personal brand", "career"], icon: "💼", replaces: "Copy.ai", savings: "$19/mo" },
+    { id: 112, title: "Twitter Thread Writer", description: "Transform ideas into viral Twitter threads with hooks and engagement.", category: "content", tags: ["Twitter", "threads", "social media"], icon: "🐦", replaces: "Typefully", savings: "$15/mo" },
+    { id: 113, title: "Tagline Generator", description: "Generate memorable taglines and slogans for brands and products.", category: "marketing", tags: ["branding", "taglines", "copywriting"], icon: "💬", replaces: "Copy.ai", savings: "$19/mo" },
+    { id: 114, title: "Grammar & Style Fixer", description: "Fix grammar, improve style, and enhance readability of any text.", category: "productivity", tags: ["grammar", "writing", "editing"], icon: "📖", replaces: "Grammarly Pro", savings: "$15/mo" },
+    { id: 115, title: "Hook Generator", description: "Create scroll-stopping hooks for social media, emails, and content.", category: "content", tags: ["hooks", "engagement", "copywriting"], icon: "🎣", replaces: "Copy.ai", savings: "$19/mo" },
+    { id: 116, title: "Competitor Analyzer", description: "Analyze competitor content to identify gaps and winning strategies.", category: "business", tags: ["research", "competitors", "strategy"], icon: "🔬", replaces: "SEMrush", savings: "$99/mo" }
+];
+
+// ============================================
+// STATE
+// ============================================
+let currentFilter = 'all';
+let pendingAppId = null;
+
+// ============================================
+// USER STATE
+// ============================================
+function getUserState() {
+    const stored = localStorage.getItem('promptwire_user');
+    if (!stored) return null;
+    
+    const state = JSON.parse(stored);
+    const today = new Date().toDateString();
+    
+    if (state.lastUseDate !== today) {
+        state.usesToday = 0;
+        state.lastUseDate = today;
+        saveUserState(state);
+    }
+    
+    return state;
+}
+
+function saveUserState(state) {
+    localStorage.setItem('promptwire_user', JSON.stringify(state));
+}
+
+function createNewUser(email) {
+    const state = {
+        email: email,
+        usesToday: 0,
+        lastUseDate: new Date().toDateString(),
+        createdAt: new Date().toISOString()
+    };
+    saveUserState(state);
+    return state;
+}
+
+function isLoggedIn() {
+    return getUserState() !== null;
+}
+
+function canUseToday() {
+    const state = getUserState();
+    if (!state) return true;
+    return state.usesToday < CONFIG.DAILY_LIMIT;
+}
+
+function getRemainingUses() {
+    const state = getUserState();
+    if (!state) return CONFIG.DAILY_LIMIT;
+    return Math.max(0, CONFIG.DAILY_LIMIT - state.usesToday);
+}
+
+function incrementUsage() {
+    const state = getUserState();
+    if (state) {
+        state.usesToday += 1;
+        saveUserState(state);
+        updateUsageBanner();
+    }
+}
+
+// ============================================
+// UI UPDATES
+// ============================================
+function updateUsageBanner() {
+    const state = getUserState();
+    const banner = document.getElementById('usageBanner');
+    
+    if (state) {
+        const remaining = getRemainingUses();
+        banner.style.display = 'flex';
+        document.getElementById('usageCount').textContent = remaining;
+    }
+}
+
+// ============================================
+// RENDER FUNCTIONS
+// ============================================
+function renderFreeApps() {
+    const grid = document.getElementById('freeAppsGrid');
+    const filtered = currentFilter === 'all' ? freeApps : freeApps.filter(a => a.category === currentFilter);
+    
+    grid.innerHTML = filtered.map(app => `
+        <div class="app-card" onclick="handleAppClick(${app.id}, '${app.url}')">
+            <div class="card-header">
+                <span class="card-category">${app.category}</span>
+                <span class="card-badge free">Free</span>
+            </div>
+            <div class="card-icon">${app.icon}</div>
+            <h3 class="card-title">${app.title}</h3>
+            <p class="card-description">${app.description}</p>
+            <div class="card-replaces">
+                <span class="card-replaces-label">Replaces</span>
+                <span class="card-replaces-value"><span class="strike">${app.replaces}</span> <span class="savings">${app.savings}</span></span>
+            </div>
+            <div class="card-tags">
+                ${app.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}
+            </div>
+            <div class="card-cta">
+                <span class="card-cta-text">Use Tool →</span>
+                <span class="card-cta-arrow">→</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderProApps() {
+    const grid = document.getElementById('proAppsGrid');
+    const filtered = currentFilter === 'all' ? proApps : proApps.filter(a => a.category === currentFilter);
+    
+    grid.innerHTML = filtered.map(app => `
+        <div class="app-card locked" onclick="showUpgradeModal()">
+            <div class="card-header">
+                <span class="card-category">${app.category}</span>
+                <span class="card-badge pro">Pro</span>
+            </div>
+            <div class="card-icon">${app.icon}</div>
+            <h3 class="card-title">${app.title}</h3>
+            <p class="card-description">${app.description}</p>
+            <div class="card-replaces">
+                <span class="card-replaces-label">Replaces</span>
+                <span class="card-replaces-value"><span class="strike">${app.replaces}</span> <span class="savings">${app.savings}</span></span>
+            </div>
+            <div class="card-tags">
+                ${app.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}
+            </div>
+            <div class="card-cta">
+                <span class="card-cta-text">Unlock with Pro →</span>
+                <span class="card-cta-arrow">🔒</span>
+            </div>
+            <div class="lock-overlay">
+                <div class="lock-icon">🔒</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ============================================
+// APP CLICK HANDLER
+// ============================================
+function handleAppClick(id, url) {
+    // Check if logged in
+    if (!isLoggedIn()) {
+        pendingAppId = id;
+        showEmailModal();
+        return;
+    }
+    
+    // Check if has remaining uses
+    if (!canUseToday()) {
+        showUpgradeModal();
+        return;
+    }
+    
+    // Navigate to tool
+    window.location.href = url;
+}
+
+// ============================================
+// MODAL FUNCTIONS
+// ============================================
+function showEmailModal() {
+    document.getElementById('emailModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('emailInput').focus();
+}
+
+function closeEmailModal() {
+    document.getElementById('emailModal').classList.remove('show');
+    document.body.style.overflow = '';
+    pendingAppId = null;
+}
+
+function showUpgradeModal() {
+    document.getElementById('upgradeModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeUpgradeModal() {
+    document.getElementById('upgradeModal').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+// ============================================
+// EMAIL & UPGRADE FUNCTIONS
+// ============================================
+async function submitEmail() {
+    const emailInput = document.getElementById('emailInput');
+    const email = emailInput.value.trim();
+    const btn = document.getElementById('emailSubmitBtn');
+    
+    if (!email || !email.includes('@')) {
+        emailInput.classList.add('error');
+        return;
+    }
+    
+    emailInput.classList.remove('error');
+    btn.disabled = true;
+    btn.textContent = 'Please wait...';
+    
+    try {
+        await fetch(CONFIG.API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+    } catch (err) {
+        console.error('Email subscribe error:', err);
+    }
+    
+    createNewUser(email);
+    updateUsageBanner();
+    
+    btn.disabled = false;
+    btn.textContent = 'Get Free Access →';
+    
+    closeEmailModal();
+    
+    // Navigate to pending app if exists
+    if (pendingAppId) {
+        const app = freeApps.find(a => a.id === pendingAppId);
+        if (app) {
+            window.location.href = app.url;
+        }
+        pendingAppId = null;
+    }
+}
+
+function upgradeToPro() {
+    window.open(CONFIG.STRIPE_LINK, '_blank');
+}
+
+// ============================================
+// FILTER HANDLING
+// ============================================
+function setupFilters() {
+    const filterTags = document.querySelectorAll('.filter-tag');
+    
+    filterTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            filterTags.forEach(t => t.classList.remove('active'));
+            tag.classList.add('active');
+            currentFilter = tag.dataset.filter;
+            renderFreeApps();
+            renderProApps();
+        });
+    });
+}
+
+// ============================================
+// EVENT LISTENERS
+// ============================================
+document.getElementById('emailInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') submitEmail();
+});
+
+document.getElementById('emailInput').addEventListener('input', (e) => {
+    e.target.classList.remove('error');
+});
+
+document.getElementById('emailModal').addEventListener('click', (e) => {
+    if (e.target.id === 'emailModal') closeEmailModal();
+});
+
+document.getElementById('upgradeModal').addEventListener('click', (e) => {
+    if (e.target.id === 'upgradeModal') closeUpgradeModal();
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeEmailModal();
+        closeUpgradeModal();
+    }
+});
+
+// ============================================
+// INITIALIZE
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    renderFreeApps();
+    renderProApps();
+    setupFilters();
+    updateUsageBanner();
+});
+</script>
+</body>
+</html>
