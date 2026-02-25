@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools Hub - Pro | PromptWire AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @font-face { font-family: 'Futura'; src: local('Futura Extra Bold'); font-weight: 800; font-style: italic; }
+        
+        :root {
+            --white: #ffffff;
+            --black: #000000;
+            --blue: #1292eb;
+            --blue-light: #e8f4fd;
+            --blue-hover: #0d7fd4;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --success-color: #10b981;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--gray-900); line-height: 1.6; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 60px 24px 80px; }
+
+        /* Pro Badge Banner */
+        .pro-banner { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 12px 24px; background: var(--black); color: white; margin-bottom: 32px; border-radius: var(--radius-lg); }
+        .pro-banner-badge { padding: 6px 14px; background: var(--blue); border-radius: 100px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .pro-banner-text { font-size: 14px; font-weight: 500; }
+        .pro-banner-text span { color: var(--blue); font-weight: 700; }
+
+        /* Header */
+        .header { text-align: center; margin-bottom: 48px; }
+        .header-icon { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; background: var(--blue-light); border-radius: var(--radius-lg); font-size: 36px; margin-bottom: 20px; }
+        .header h1 { font-family: 'Futura', 'Trebuchet MS', sans-serif; font-size: clamp(32px, 5vw, 48px); font-weight: 800; font-style: italic; margin-bottom: 12px; }
+        .header h1 span { color: var(--blue); }
+        .header p { font-size: 17px; color: var(--gray-500); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+
+        /* Stats Row */
+        .stats-row { display: flex; justify-content: center; gap: 48px; margin-top: 32px; padding: 20px; background: var(--gray-50); border-radius: var(--radius-lg); flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--blue); }
+        .stat-label { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+
+        /* Filter Tags */
+        .filter-section { margin-bottom: 32px; }
+        .filter-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .filter-tag { padding: 10px 20px; font-size: 14px; font-weight: 600; background: var(--white); border: 2px solid var(--gray-200); border-radius: 100px; color: var(--gray-600); cursor: pointer; transition: all 0.2s ease; }
+        .filter-tag:hover { border-color: var(--blue); color: var(--blue); }
+        .filter-tag.active { background: var(--blue); border-color: var(--blue); color: var(--white); }
+
+        /* Section Headers */
+        .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+        .section-badge { padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; background: var(--blue); color: white; }
+        .section-title { font-size: 20px; font-weight: 700; color: var(--gray-900); }
+        .section-subtitle { font-size: 14px; color: var(--success-color); margin-left: auto; font-weight: 600; }
+
+        /* App Grid */
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; margin-bottom: 48px; }
+
+        /* App Card */
+        .app-card { background: var(--white); border: 2px solid var(--gray-200); border-radius: var(--radius-lg); padding: 24px; cursor: pointer; transition: all 0.25s ease; position: relative; overflow: hidden; }
+        .app-card:hover { border-color: var(--blue); box-shadow: 0 8px 30px rgba(18, 146, 235, 0.12); transform: translateY(-2px); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .card-category { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--blue); background: var(--blue-light); padding: 6px 12px; border-radius: 100px; }
+        .card-badge { padding: 6px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; background: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+        
+        .card-icon { width: 56px; height: 56px; background: var(--gray-100); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 28px; }
+        .card-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: var(--gray-900); }
+        .card-description { font-size: 14px; color: var(--gray-500); margin-bottom: 16px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .card-replaces { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 10px 14px; background: var(--gray-50); border-radius: 8px; }
+        .card-replaces-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--gray-400); }
+        .card-replaces-value { font-size: 13px; font-weight: 600; color: var(--gray-700); margin-left: auto; }
+        .card-replaces-value .strike { text-decoration: line-through; color: var(--gray-400); margin-right: 4px; }
+        .card-replaces-value .savings { color: var(--success-color); }
+        
+        .card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .card-tag { padding: 6px 12px; font-size: 12px; font-weight: 500; background: var(--gray-100); border-radius: 100px; color: var(--gray-600); }
+        
+        .card-cta { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--gray-200); }
+        .card-cta-text { font-size: 13px; font-weight: 600; color: var(--blue); }
+        .card-cta-arrow { width: 32px; height: 32px; background: var(--blue-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--blue); transition: all 0.2s; }
+        .app-card:hover .card-cta-arrow { background: var(--blue); color: white; }
+
+        /* New Tools Section */
+        .new-tools-section { text-align: center; padding: 60px 24px; border: 2px dashed var(--blue); border-radius: var(--radius-xl); margin-top: 24px; background: var(--blue-light); }
+        .new-tools-icon { font-size: 48px; margin-bottom: 16px; }
+        .new-tools-section h3 { font-size: 24px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+        .new-tools-section p { font-size: 15px; color: var(--gray-600); margin-bottom: 8px; }
+        .new-tools-section .subtext { font-size: 13px; color: var(--blue); font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .app-grid { grid-template-columns: 1fr; }
+            .stats-row { gap: 24px; }
+            .filter-tags { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 8px; }
+            .filter-tag { flex-shrink: 0; }
+            .pro-banner { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Pro Badge Banner -->
+    <div class="pro-banner">
+        <span class="pro-banner-badge">Pro</span>
+        <span class="pro-banner-text">You have <span>unlimited access</span> to all tools</span>
+    </div>
+
+    <header class="header">
+        <div class="header-icon">🤖</div>
+        <h1>AI Tools <span>Hub</span></h1>
+        <p>Your complete AI toolkit. 20+ tools that replace $200+/month in subscriptions. Generate content, optimize SEO, build strategies — all unlimited.</p>
+        
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-value">20+</div>
+                <div class="stat-label">AI Tools</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">∞</div>
+                <div class="stat-label">Unlimited Uses</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">$200+</div>
+                <div class="stat-label">Monthly Savings</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Tags -->
+    <div class="filter-section">
+        <div class="filter-tags" id="filterTags">
+            <button class="filter-tag active" data-filter="all">All Tools</button>
+            <button class="filter-tag" data-filter="content">Content</button>
+            <button class="filter-tag" data-filter="marketing">Marketing</button>
+            <button class="filter-tag" data-filter="seo">SEO</button>
+            <button class="filter-tag" data-filter="productivity">Productivity</button>
+            <button class="filter-tag" data-filter="business">Business</button>
+        </div>
+    </div>
+
+    <!-- All Tools Section -->
+    <div class="section-header">
+        <span class="section-badge">Pro</span>
+        <h2 class="section-title">All Tools</h2>
+        <span class="section-subtitle">✓ Unlimited Access</span>
+    </div>
+    <div class="app-grid" id="allAppsGrid"></div>
+    
+    <!-- New Tools Coming -->
+    <div class="new-tools-section">
+        <div class="new-tools-icon">✨</div>
+        <h3>New Tools Added Monthly</h3>
+        <p>We ship new AI tools every month. You get instant access.</p>
+        <span class="subtext">Have a tool request? Reply to any newsletter email.</span>
+    </div>
+</div>
+
+<script>
+// ============================================
+// ALL APPS DATA (Pro version - all unlocked)
+// ============================================
+const allApps = [
+    // Content Tools
+    { id: 1, title: "Social Media Pack", description: "Generate a week's worth of LinkedIn, Twitter, and Instagram posts from any topic.", category: "content", tags: ["social media", "content", "marketing"], icon: "📱", replaces: "Buffer + Jasper", savings: "$50/mo", url: "/pro/social-media-pack.html" },
+    { id: 2, title: "Content Repurposer", description: "Transform one piece of content into 10+ formats for every platform.", category: "content", tags: ["repurposing", "content", "efficiency"], icon: "♻️", replaces: "Repurpose.io", savings: "$25/mo", url: "/pro/content-repurposer.html" },
+    { id: 3, title: "Video Script Generator", description: "Create engaging video scripts with hooks, retention techniques, and CTAs.", category: "content", tags: ["video", "YouTube", "scripts"], icon: "🎬", replaces: "Jasper", savings: "$29/mo", url: "/pro/video-script.html" },
+    { id: 4, title: "Blog Post Writer", description: "Transform topics into SEO-optimized blog posts with proper structure.", category: "content", tags: ["blogging", "SEO", "writing"], icon: "✍️", replaces: "Writesonic", savings: "$19/mo", url: "/pro/blog-writer.html" },
+    { id: 5, title: "Product Description Writer", description: "Write compelling product descriptions that drive purchases.", category: "content", tags: ["ecommerce", "products", "copywriting"], icon: "🛍️", replaces: "Jasper", savings: "$29/mo", url: "/pro/product-descriptions.html" },
+    { id: 6, title: "Twitter Thread Writer", description: "Transform ideas into viral Twitter threads with hooks and engagement.", category: "content", tags: ["Twitter", "threads", "social media"], icon: "🐦", replaces: "Typefully", savings: "$15/mo", url: "/pro/twitter-threads.html" },
+    { id: 7, title: "Hook Generator", description: "Create scroll-stopping hooks for social media, emails, and content.", category: "content", tags: ["hooks", "engagement", "copywriting"], icon: "🎣", replaces: "Copy.ai", savings: "$19/mo", url: "/pro/hook-generator.html" },
+    
+    // SEO Tools
+    { id: 8, title: "SEO Content Optimizer", description: "Optimize any text for search engines with keyword suggestions and improvements.", category: "seo", tags: ["SEO", "content", "optimization"], icon: "🔍", replaces: "Surfer SEO", savings: "$49/mo", url: "/pro/seo-optimizer.html" },
+    { id: 9, title: "Text Humanizer", description: "Transform AI-generated text into natural content that bypasses AI detectors.", category: "seo", tags: ["writing", "AI detection", "content"], icon: "✨", replaces: "Undetectable AI", savings: "$15/mo", url: "/pro/text-humanizer.html" },
+    
+    // Marketing Tools
+    { id: 10, title: "Email Sequence Writer", description: "Generate complete email sequences for launches, nurturing, or sales.", category: "marketing", tags: ["email", "marketing", "copywriting"], icon: "📧", replaces: "Copy.ai", savings: "$19/mo", url: "/pro/email-sequences.html" },
+    { id: 11, title: "Ad Copy Generator", description: "Create high-converting ad copy for Facebook, Google, and LinkedIn ads.", category: "marketing", tags: ["ads", "copywriting", "conversion"], icon: "📣", replaces: "AdCreative", savings: "$29/mo", url: "/pro/ad-copy.html" },
+    { id: 12, title: "Landing Page Copy", description: "Generate persuasive landing page copy with headlines, benefits, and CTAs.", category: "marketing", tags: ["landing pages", "copywriting", "conversion"], icon: "🎯", replaces: "Copy.ai", savings: "$19/mo", url: "/pro/landing-page.html" },
+    { id: 13, title: "Cold Email Writer", description: "Craft personalized cold emails that get responses using proven frameworks.", category: "marketing", tags: ["outreach", "sales", "email"], icon: "✉️", replaces: "Lavender", savings: "$29/mo", url: "/pro/cold-emails.html" },
+    { id: 14, title: "Tagline Generator", description: "Generate memorable taglines and slogans for brands and products.", category: "marketing", tags: ["branding", "taglines", "copywriting"], icon: "💬", replaces: "Copy.ai", savings: "$19/mo", url: "/pro/taglines.html" },
+    
+    // Productivity Tools
+    { id: 15, title: "Resume Builder", description: "Create ATS-optimized resumes tailored to specific job descriptions.", category: "productivity", tags: ["career", "resume", "jobs"], icon: "📄", replaces: "Resume.io", savings: "$15/mo", url: "/pro/resume-builder.html" },
+    { id: 16, title: "Meeting Notes Processor", description: "Transform messy meeting notes into organized summaries with action items.", category: "productivity", tags: ["meetings", "notes", "productivity"], icon: "📝", replaces: "Otter.ai", savings: "$17/mo", url: "/pro/meeting-notes.html" },
+    { id: 17, title: "LinkedIn Bio Generator", description: "Create attention-grabbing LinkedIn bios that attract opportunities.", category: "productivity", tags: ["LinkedIn", "personal brand", "career"], icon: "💼", replaces: "Copy.ai", savings: "$19/mo", url: "/pro/linkedin-bio.html" },
+    { id: 18, title: "Grammar & Style Fixer", description: "Fix grammar, improve style, and enhance readability of any text.", category: "productivity", tags: ["grammar", "writing", "editing"], icon: "📖", replaces: "Grammarly Pro", savings: "$15/mo", url: "/pro/grammar-fixer.html" },
+    
+    // Business Tools
+    { id: 19, title: "Business Idea Generator", description: "Validate and generate profitable business ideas based on your skills and market.", category: "business", tags: ["business", "strategy", "validation"], icon: "💡", replaces: "Consultant", savings: "$100+", url: "/pro/business-ideas.html" },
+    { id: 20, title: "Competitor Analyzer", description: "Analyze competitor content to identify gaps and winning strategies.", category: "business", tags: ["research", "competitors", "strategy"], icon: "🔬", replaces: "SEMrush", savings: "$99/mo", url: "/pro/competitor-analyzer.html" }
+];
+
+// ============================================
+// STATE
+// ============================================
+let currentFilter = 'all';
+
+// ============================================
+// RENDER FUNCTION
+// ============================================
+function renderApps() {
+    const grid = document.getElementById('allAppsGrid');
+    const filtered = currentFilter === 'all' ? allApps : allApps.filter(a => a.category === currentFilter);
+    
+    grid.innerHTML = filtered.map(app => `
+        <div class="app-card" onclick="window.location.href='${app.url}'">
+            <div class="card-header">
+                <span class="card-category">${app.category}</span>
+                <span class="card-badge">Unlimited</span>
+            </div>
+            <div class="card-icon">${app.icon}</div>
+            <h3 class="card-title">${app.title}</h3>
+            <p class="card-description">${app.description}</p>
+            <div class="card-replaces">
+                <span class="card-replaces-label">Replaces</span>
+                <span class="card-replaces-value"><span class="strike">${app.replaces}</span> <span class="savings">${app.savings}</span></span>
+            </div>
+            <div class="card-tags">
+                ${app.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}
+            </div>
+            <div class="card-cta">
+                <span class="card-cta-text">Use Tool →</span>
+                <span class="card-cta-arrow">→</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ============================================
+// FILTER HANDLING
+// ============================================
+function setupFilters() {
+    const filterTags = document.querySelectorAll('.filter-tag');
+    
+    filterTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            filterTags.forEach(t => t.classList.remove('active'));
+            tag.classList.add('active');
+            currentFilter = tag.dataset.filter;
+            renderApps();
+        });
+    });
+}
+
+// ============================================
+// INITIALIZE
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    renderApps();
+    setupFilters();
+});
+</script>
+</body>
+</html>
